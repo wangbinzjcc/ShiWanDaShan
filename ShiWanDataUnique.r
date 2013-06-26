@@ -26,6 +26,31 @@ RE00 <- reshape(data=AG00, v.names='序号', timevar='鉴定名',
 RE00[is.na(RE00)] <- 0
 RE00 
 RE01 <- RE00[,-1]
+#################################
+## Raw data and plotting
+require(vegan)
+m <- betadiver(RE01)
+plot(m)
+
+## The indices
+betadiver(help=TRUE)
+## The basic Whittaker index
+
+d4 <- betadiver(RE01, "r")
+d5 <- betadiver(RE01, "I")
+d6 <- betadiver(RE01, "e")
+d7 <- betadiver(RE01, "t") 
+mode(d4)
+unclass(d4)
+as.matrix(d4)
+#
+#
+write.csv(as.matrix(d4),'d4.csv')
+write.csv(as.matrix(d5),'d5.csv')
+write.csv(as.matrix(d6),'d6.csv')
+write.csv(as.matrix(d7),'d7.csv')
+#
+##################################
 #
 plot(R00 <- rowSums(RE01), ylim=c(0,max(R00)*1.2))
 plot(A00 <- rowSums(RE01>0), ylim=c(0,max(A00)*1.2))
@@ -124,30 +149,42 @@ dev.off()
 setwd('F:\\DataW\\shiwan-data')
 dir()
 ShiWdata <- read.csv("shiwanData2013-5-15.csv")
-ShiWdata <- subset(ShiWdata,胸径.cm.>=2)
+ShiWdata <- subset(ShiWdata,胸径.cm.>=2 & 
+                     鉴定名 != '00枯立木' & 鉴定名 != '??' &
+                   鉴定名 != '00藤本')
 summary(ShiWdata)
 ###
 tabl.dat <- with(ShiWdata, tapply(鉴定名,样方号,table))
-lapply(tabl.dat,function(xx){sort(xx,decreasing=T)[1:10]})
+lapply(tabl.dat,function(xx){sort(xx,decreasing=T)[1:20]})
 ###### 
-setwd('F:\\其它的\\北部湾样方调查资料')
-d00 <- dir(pattern = '.xlsx')
 Sys.setenv(JAVA_HOME="C:\\Program Files\\Java\\jre7")
 require(rJava)
 require(XLConnect)
-df.one <- readWorksheetFromFile(d00[1],sheet=1)
+#
+setwd('F:\\其它的\\北部湾样方调查资料')
+d00 <- dir(pattern = '.xlsx')
+d00[1]
+d00 <- d00[-1]
+df.one <-lapply(d00, function(xx){readWorksheetFromFile(xx,sheet=1)})
+summary(df.one)
+str(df.one)
+df.one[[1]]
+########
+lapply(df.one,function(xx){sort(table(xx$sp),decreasing=T)[1:20]})
 
+###
+??betadiver
 
+plot(m)
+## The indices
+betadiver(help=TRUE)
+## The basic Whittaker index
+d <- betadiver(sipoo, "w")
+## This should be equal to Sorensen index (binary Bray-Curtis in
+## vegan)
+range(d - vegdist(sipoo, binary=TRUE))
 
-
-
-
-
-
-
-
-
-
+###########
 
 
 
