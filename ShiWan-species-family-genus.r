@@ -1,5 +1,6 @@
 ########################################################
-#
+#  自动查找 科属~~
+#######
 setwd('F:\\DataW\\shiwan-data')
 spedat <- readLines('ShiWanDaShan-AllSpecies.txt')
 
